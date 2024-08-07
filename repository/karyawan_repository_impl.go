@@ -16,7 +16,7 @@ func NewKaryawanRepository(db *sql.DB) KaryawanRepository {
 	return &karyawanRepositoryImpl{DB: db}
 }
 
-func (repository *karyawanRepositoryImpl) Insert(ctx context.Context, karyawan entity.Karyawan) (entity.Karyawan, error) {
+func (repository *karyawanRepositoryImpl) Insert(ctx context.Context, karyawan entity.KaryawanTable) (entity.KaryawanTable, error) {
 	sqlcmd := "insert into Karyawan(nama, married, pasangan, jabatan, tanggallahir, gaji) VALUES(?,?,?,?,?,?)"
 	hasil, err := repository.DB.ExecContext(ctx, sqlcmd, karyawan.nama, karyawan.married, karyawan.pasangan, karyawan.jabatan, karyawan.tanggallahir, karyawan.gaji)
 	if err != nil {
@@ -30,10 +30,10 @@ func (repository *karyawanRepositoryImpl) Insert(ctx context.Context, karyawan e
 	return karyawan, nil
 }
 
-func (repository *karyawanRepositoryImpl) FindById(ctx context.Context, id int32) (entity.Karyawan, error) {
+func (repository *karyawanRepositoryImpl) FindById(ctx context.Context, id int32) (entity.KaryawanTable, error) {
 	sqlquery := "select id,nama,married, pasangan, jabatan, tanggallahir, gaji where id=? from karyawan limit 1"
 	baris, err := repository.DB.QueryContext(ctx, sqlquery, id)
-	objentity := entity.Karyawan{}
+	objentity := entity.KaryawanTable{}
 
 	if err != nil {
 		return objentity, err
@@ -77,15 +77,15 @@ func (repository *karyawanRepositoryImpl) FindById(ctx context.Context, id int32
 	}
 
 }
-func (repository *karyawanRepositoryImpl) FindAll(ctx context.Context) ([]entity.Karyawan, error) {
+func (repository *karyawanRepositoryImpl) FindAll(ctx context.Context) ([]entity.KaryawanTable, error) {
 	sqlquery := "select id,nama,married, pasangan, jabatan, tanggallahir, gaji from karyawan"
 	baris, err := repository.DB.QueryContext(ctx, sqlquery)
-	objentity := entity.Karyawan{}
+	karyawan := entity.KaryawanTable{}
 
 	if err != nil {
 		return nil, err
 	}
-	listkaryawan := []entity.Karyawan{}
+	listkaryawan := []entity.KaryawanTable{}
 	defer baris.Close()
 	for baris.Next() {
 		var id int
@@ -99,27 +99,27 @@ func (repository *karyawanRepositoryImpl) FindAll(ctx context.Context) ([]entity
 		err := baris.Scan(&id, &nama, &married, &pasangan, &jabatan, &tanggallahir, &gaji)
 
 		if err != nil {
-			return objentity, err
+			return karyawan, err
 		}
 
 		if len(married) > 0 && married[0] == 1 {
 			isMarried = true
-			objentity.married = isMarried
+			karyawan.married = isMarried
 		}
 
 		if pasangan.Valid {
-			objentity.pasangan = pasangan.String
+			karyawan.pasangan = pasangan.String
 		}
 
-		objentity.jabatan = jabatan
+		karyawan.jabatan = jabatan
 		if tanggallahir.Valid {
-			objentity.tanggallahir = tanggallahir.Time
+			karyawan.tanggallahir = tanggallahir.Time
 		}
 
 		if gaji.Valid {
-			objentity.gaji = gaji.Int32
+			karyawan.gaji = gaji.Int32
 		}
-		listkaryawan = append(listkaryawan, objentity)
+		listkaryawan = append(listkaryawan, karyawan)
 	}
 	return listkaryawan, nil
 }

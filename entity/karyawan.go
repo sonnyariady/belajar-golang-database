@@ -3,7 +3,7 @@ package entity
 //utk mysql
 import "database/sql"
 
-type Karyawan struct {
+type KaryawanTable struct {
 	id           int
 	nama         string
 	jabatan      string
