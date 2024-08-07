@@ -4,11 +4,11 @@ package entity
 import "database/sql"
 
 type KaryawanTable struct {
-	id           int
-	nama         string
-	jabatan      string
-	married      bool
-	pasangan     sql.NullString
-	tanggallahir sql.NullTime
-	gaji         sql.NullInt64
+	Id           int64
+	Nama         string
+	Jabatan      string
+	Married      bool
+	Pasangan     sql.NullString
+	Tanggallahir sql.NullTime
+	Gaji         sql.NullInt64
 }

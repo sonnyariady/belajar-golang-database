@@ -17,12 +17,12 @@ func TestKaryawanInsert(t *testing.T) {
 
 	ctx := context.Background()
 	karyawan := entity.KaryawanTable{
-		nama:         "Jaka",
-		jabatan:      "Accounting",
-		married:      true,
-		tanggallahir: sql.NullTime{Time: time.Date(1987, 7, 20, 0, 0, 0, 0, time.Local), Valid: true},
-		pasangan:     sql.NullString{String: "Henny", Valid: true},
-		gaji:         sql.NullInt64{Int64: 15, Valid: true},
+		Nama:         "Jaka",
+		Jabatan:      "Accounting",
+		Married:      true,
+		Tanggallahir: sql.NullTime{Time: time.Date(1987, 7, 20, 0, 0, 0, 0, time.Local), Valid: true},
+		Pasangan:     sql.NullString{String: "Henny", Valid: true},
+		Gaji:         sql.NullInt64{Int64: 15, Valid: true},
 	}
 	hasil, err := karyawanRepository.Insert(ctx, karyawan)
 	if err != nil {
