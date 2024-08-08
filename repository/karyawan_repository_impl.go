@@ -31,7 +31,7 @@ func (repository *karyawanRepositoryImpl) Insert(ctx context.Context, karyawan e
 }
 
 func (repository *karyawanRepositoryImpl) FindById(ctx context.Context, id int64) (entity.KaryawanTable, error) {
-	sqlquery := "select id,nama,married, pasangan, jabatan, tanggallahir, gaji where id=? from karyawan limit 1"
+	sqlquery := "select id,nama,married, pasangan, jabatan, tanggallahir, gaji from karyawan where id=? limit 1"
 	baris, err := repository.DB.QueryContext(ctx, sqlquery, id)
 	objentity := entity.KaryawanTable{}
 
@@ -40,9 +40,13 @@ func (repository *karyawanRepositoryImpl) FindById(ctx context.Context, id int64
 	}
 	defer baris.Close()
 	if baris.Next() {
-
-		err := baris.Scan(&objentity.Id, &objentity.Nama, &objentity.Married, &objentity.Pasangan, &objentity.Jabatan, &objentity.Tanggallahir, &objentity.Gaji)
-
+		var isMarried bool = false
+		var married []byte
+		err := baris.Scan(&objentity.Id, &objentity.Nama, &married, &objentity.Pasangan, &objentity.Jabatan, &objentity.Tanggallahir, &objentity.Gaji)
+		if len(married) > 0 && married[0] == 1 {
+			isMarried = true
+		}
+		objentity.Married = isMarried
 		if err != nil {
 			return objentity, err
 		}
@@ -64,9 +68,13 @@ func (repository *karyawanRepositoryImpl) FindAll(ctx context.Context) ([]entity
 	listkaryawan := []entity.KaryawanTable{}
 	defer baris.Close()
 	for baris.Next() {
-
-		baris.Scan(&objentity.Id, &objentity.Nama, &objentity.Married, &objentity.Pasangan, &objentity.Jabatan, &objentity.Tanggallahir, &objentity.Gaji)
-
+		var isMarried bool = false
+		var married []byte
+		baris.Scan(&objentity.Id, &objentity.Nama, &married, &objentity.Pasangan, &objentity.Jabatan, &objentity.Tanggallahir, &objentity.Gaji)
+		if len(married) > 0 && married[0] == 1 {
+			isMarried = true
+		}
+		objentity.Married = isMarried
 		listkaryawan = append(listkaryawan, objentity)
 	}
 	return listkaryawan, nil

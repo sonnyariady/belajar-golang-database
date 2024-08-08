@@ -30,3 +30,29 @@ func TestKaryawanInsert(t *testing.T) {
 	}
 	fmt.Println(hasil)
 }
+
+func TestFindById(t *testing.T) {
+	karyawanRepository := NewKaryawanRepository(belajar_golang_database.GetConnection())
+
+	ctx := context.Background()
+	hasil, err := karyawanRepository.FindById(ctx, 10)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(hasil)
+}
+
+func TestFindAll(t *testing.T) {
+	karyawanRepository := NewKaryawanRepository(belajar_golang_database.GetConnection())
+
+	ctx := context.Background()
+	hasil, err := karyawanRepository.FindAll(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, kar := range hasil {
+		fmt.Println(kar)
+	}
+}
