@@ -75,7 +75,7 @@ func (m *mahasiswaRepositoryImpl) FindById(ctx context.Context, id int32) (entit
 
 // FindByJurusan implements MahasiswaRepository.
 func (m *mahasiswaRepositoryImpl) FindByJurusan(ctx context.Context, jurusan string) ([]entity.Mahasiswa, error) {
-	sqlquery := "select top 1 id,nama, jurusan, tgllahir from Mahasiswa where jurusan=@jurusan"
+	sqlquery := "select id,nama, jurusan, tgllahir from Mahasiswa where jurusan=@jurusan"
 	baris, err := m.DB.QueryContext(ctx, sqlquery, sql.Named("jurusan", jurusan))
 	if err != nil {
 		return nil, err
@@ -104,7 +104,7 @@ func (m *mahasiswaRepositoryImpl) FindByJurusan(ctx context.Context, jurusan str
 func (m *mahasiswaRepositoryImpl) Insert(ctx context.Context, objentity entity.Mahasiswa) (entity.Mahasiswa, error) {
 	sqlcmd := "insert into Mahasiswa(nama, jurusan, tgllahir) OUTPUT INSERTED.id VALUES(@nama, @jurusan, @tgllahir)"
 	lastid := 0
-	_, err := m.DB.QueryContext(ctx, sqlcmd, objentity.Nama, objentity.Jurusan, objentity.TglLahir).Scan(&lastid)
+	_, err := m.DB.QueryRow(ctx, sqlcmd, objentity.Nama, objentity.Jurusan, objentity.TglLahir).Scan(&lastid)
 	objentity.Id = lastid
 	if err != nil {
 		return objentity, err
